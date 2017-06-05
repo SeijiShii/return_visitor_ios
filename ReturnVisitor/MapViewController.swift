@@ -1,25 +1,21 @@
 //
-//  ViewController.swift
+//  MapViewController.swift
 //  ReturnVisitor
 //
-//  Created by Seiji Shii on 2017/06/04.
+//  Created by Seiji Shii on 2017/06/05.
 //  Copyright © 2017年 SeijiShii. All rights reserved.
 //
 
+import Foundation
 import UIKit
-
-class ViewController: UIViewController {
-
+class MapViewController: UIViewController {
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        self.view.backgroundColor = UIColor.red // 背景を赤に
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
-
-
 }
-
