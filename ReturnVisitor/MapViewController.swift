@@ -16,6 +16,8 @@ class MapViewController: UIViewController {
         super.viewDidLoad()
         
         initMapView()
+        initZoomButton()
+        
         initAdView()
         
     }
@@ -45,6 +47,13 @@ class MapViewController: UIViewController {
 //        marker.title = "Sydney"
 //        marker.snippet = "Australia"
 //        marker.map = mapView
+    }
+    
+    func initZoomButton() {
+        let zoomButton : UIStepper = UIStepper()
+        zoomButton.frame.origin.x = mapView.frame.width / 2 - zoomButton.frame.width / 2
+        zoomButton.frame.origin.y = mapView.frame.height - (zoomButton.frame.height + 10)
+        mapView.addSubview(zoomButton)
     }
     
     func initAdView() {
