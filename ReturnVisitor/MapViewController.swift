@@ -28,7 +28,14 @@ class MapViewController: UIViewController {
         let mapFrame: CGRect = CGRect(x: 0, y: 0, width: DeviceSize.screenWidth(), height: DeviceSize.screenHeight() - 50)
         mapView = GMSMapView.map(withFrame: mapFrame, camera: camera)
         mapView.isMyLocationEnabled = true
+        
         mapView.mapType = GMSMapViewType.hybrid
+        mapView.settings.myLocationButton = true
+        mapView.settings.compassButton = true
+        
+        mapView.settings.rotateGestures = true
+        mapView.settings.zoomGestures = true
+        
         
         view.addSubview(mapView)
         
