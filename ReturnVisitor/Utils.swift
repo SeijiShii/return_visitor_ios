@@ -41,3 +41,11 @@ struct DeviceSize {
     }
     
 }
+
+struct UserDefaultKeys {
+    struct CameraPosition {
+        static let latitude: String = "latitude"
+        static let longitude: String = "longitude"
+        static let zoomLevel: String = "zoom_level"
+    }
+}
