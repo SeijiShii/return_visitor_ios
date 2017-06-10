@@ -54,7 +54,18 @@ class MapViewController: UIViewController {
         zoomButton.frame.origin.x = mapView.frame.width / 2 - zoomButton.frame.width / 2
         zoomButton.frame.origin.y = mapView.frame.height - (zoomButton.frame.height + 10)
         mapView.addSubview(zoomButton)
+        
+        zoomButton.minimumValue = Double(mapView.minZoom)
+        zoomButton.maximumValue = Double(mapView.maxZoom)
+        zoomButton.value = Double(mapView.camera.zoom)
+        zoomButton.addTarget(self, action: #selector(MapViewController.zoomMap(sender:)), for: .touchUpInside)
     }
+    
+    func zoomMap(sender: UIStepper) {
+        mapView.animate(toZoom: Float(sender.value))
+    }
+    
+    
     
     func initAdView() {
 
