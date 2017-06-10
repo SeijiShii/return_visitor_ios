@@ -23,14 +23,17 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
     }
 
     var mapView: GMSMapView!
+    var mapFrame: CGRect!
     func initMapView() {
         // Create a GMSCameraPosition that tells the map to display the
-        let mapFrame: CGRect = CGRect(x: 0, y: 0, width: DeviceSize.screenWidth(), height: DeviceSize.screenHeight() - 50)
+        mapFrame = CGRect(x: 0, y: 0, width: DeviceSize.screenWidth(), height: DeviceSize.screenHeight() - 50)
         var cameraPosition = loadCameraPosition();
         if cameraPosition == nil {
             cameraPosition = GMSCameraPosition.camera(withLatitude: 0, longitude: 0, zoom: 1.0)
         }
-        mapView = GMSMapView.map(withFrame: mapFrame, camera: cameraPosition!)
+        mapView = GMSMapView()
+        mapView.camera = cameraPosition!
+        updateMapViewFrame()
         mapView.isMyLocationEnabled = true
         
         mapView.mapType = GMSMapViewType.hybrid
@@ -44,12 +47,18 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
         
         view.addSubview(mapView)
         
-        // Creates a marker in the center of the map.
-//        let marker = GMSMarker()
-//        marker.position = CLLocationCoordinate2D(latitude: -33.86, longitude: 151.20)
-//        marker.title = "Sydney"
-//        marker.snippet = "Australia"
-//        marker.map = mapView
+    }
+    
+    func updateMapViewFrame() {
+        mapFrame = CGRect(x: 0, y: 0, width: DeviceSize.screenWidth(), height: DeviceSize.screenHeight() - 50)
+        mapView.frame = mapFrame
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+
+        updateMapViewFrame()
+        updateZoomButtonFrame()
+        updateAdFrame()
     }
     
     func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
@@ -84,10 +93,13 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
         }
     }
     
+    var zoomButton : UIStepper!
+    var zoomButtonFrame: CGRect!
     func initZoomButton() {
-        let zoomButton : UIStepper = UIStepper()
-        zoomButton.frame.origin.x = mapView.frame.width / 2 - zoomButton.frame.width / 2
-        zoomButton.frame.origin.y = mapView.frame.height - (zoomButton.frame.height + 10)
+        zoomButton = UIStepper()
+        
+        updateZoomButtonFrame()
+        
         mapView.addSubview(zoomButton)
         
         zoomButton.minimumValue = Double(mapView.minZoom)
@@ -96,16 +108,32 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
         zoomButton.addTarget(self, action: #selector(MapViewController.zoomMap(sender:)), for: .touchUpInside)
     }
     
+    func updateZoomButtonFrame() {
+        zoomButtonFrame = CGRect(x: mapView.frame.width / 2 - zoomButton.frame.width / 2, y: mapView.frame.height - (zoomButton.frame.height + 10), width:
+            zoomButton.frame.width, height: zoomButton.frame.height)
+        zoomButton.frame = zoomButtonFrame
+    }
+    
     func zoomMap(sender: UIStepper) {
         mapView.animate(toZoom: Float(sender.value))
     }
     
     
+    var adView : UIView!
+    var adFrame : CGRect!
+    
     func initAdView() {
 
-        let grayRect : UIView = UIView(frame: CGRect(x: 0, y: DeviceSize.screenHeight() - 50, width: DeviceSize.screenWidth(), height: 50))
-        grayRect.backgroundColor = UIColor.gray
-        view.addSubview(grayRect)
+        adView = UIView()
+
+        updateAdFrame()
+        adView.backgroundColor = UIColor.gray
+        view.addSubview(adView)
+    }
+    
+    func updateAdFrame() {
+        adFrame = CGRect(x: 0, y: DeviceSize.screenHeight() - 50, width: DeviceSize.screenWidth(), height: 50)
+        adView.frame = adFrame
     }
     
     override func didReceiveMemoryWarning() {
