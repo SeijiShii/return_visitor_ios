@@ -18,6 +18,8 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
         initMapView()
         initZoomButton()
         
+        initLogoButton()
+        
         initAdView()
         
     }
@@ -134,6 +136,20 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
     func updateAdFrame() {
         adFrame = CGRect(x: 0, y: DeviceSize.screenHeight() - 50, width: DeviceSize.screenWidth(), height: 50)
         adView.frame = adFrame
+    }
+    
+    var logoButton: UIButton!
+    func initLogoButton() {
+        logoButton = UIButton(frame: CGRect(x: 10, y: 20, width: 40, height: 40))
+        let logo = UIImage(named: "logo_40.png")
+        logoButton.setImage(logo, for: .normal)
+        mapView.addSubview(logoButton)
+        
+        logoButton.addTarget(self, action: #selector(tapLogoButton(_:)), for: .touchUpInside)
+    }
+    
+    func tapLogoButton(_ sender: UIButton) {
+        print("Logo tapped!")
     }
     
     override func didReceiveMemoryWarning() {
