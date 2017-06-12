@@ -37,7 +37,7 @@ class MapViewController: UIViewController, GMSMapViewDelegate, OverlayDelegate, 
         }
         mapView = GMSMapView()
         mapView.camera = cameraPosition!
-        updateMapViewFrame()
+        updateMapViewFrame(size: DeviceSize.bounds().size)
         mapView.isMyLocationEnabled = true
         
         mapView.mapType = GMSMapViewType.hybrid
@@ -53,24 +53,37 @@ class MapViewController: UIViewController, GMSMapViewDelegate, OverlayDelegate, 
         
     }
     
-    func updateMapViewFrame() {
-        mapFrame = CGRect(x: 0, y: 0, width: DeviceSize.screenWidth(), height: DeviceSize.screenHeight() - 50)
+    func updateMapViewFrame(size: CGSize) {
+        mapFrame = CGRect(x: 0, y: 0, width: Int(size.width), height: Int(size.height) - AdViewSize.height)
         mapView.frame = mapFrame
     }
     
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        updateMapViewFrame(size: size)
+        updateZoomButtonFrame(mapViewSize: self.mapView.frame.size)
+        updateAdFrame(size: size)
+        
+        overlay.updateSize(size: size)
+        drawer.updateHeight(height: Int(size.height) - AdViewSize.height)
+        
+
+    }
+    
+    
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
 
-        updateMapViewFrame()
-        updateZoomButtonFrame()
-        updateAdFrame()
-        
-        overlay.updateSize(size: CGSize(width: DeviceSize.screenWidth(), height: DeviceSize.screenHeight() - AdViewSize.height))
-        drawer.updateHeight(height: DeviceSize.screenHeight() - AdViewSize.height)
+        super.traitCollectionDidChange(previousTraitCollection)
+
+       
+
         
     }
     
     func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
         saveCameraPosition();
+        zoomButton.value = Double(mapView.camera.zoom)
     }
     
     func mapView(_ mapView: GMSMapView, didLongPressAt coordinate: CLLocationCoordinate2D) {
@@ -106,7 +119,7 @@ class MapViewController: UIViewController, GMSMapViewDelegate, OverlayDelegate, 
     func initZoomButton() {
         zoomButton = UIStepper()
         
-        updateZoomButtonFrame()
+        updateZoomButtonFrame(mapViewSize: mapView.frame.size)
         
         mapView.addSubview(zoomButton)
         
@@ -116,8 +129,8 @@ class MapViewController: UIViewController, GMSMapViewDelegate, OverlayDelegate, 
         zoomButton.addTarget(self, action: #selector(MapViewController.zoomMap(sender:)), for: .touchUpInside)
     }
     
-    func updateZoomButtonFrame() {
-        zoomButtonFrame = CGRect(x: mapView.frame.width / 2 - zoomButton.frame.width / 2, y: mapView.frame.height - (zoomButton.frame.height + 10), width:
+    func updateZoomButtonFrame(mapViewSize size: CGSize) {
+        zoomButtonFrame = CGRect(x: size.width / 2 - zoomButton.frame.width / 2, y: size.height - (zoomButton.frame.height + 10), width:
             zoomButton.frame.width, height: zoomButton.frame.height)
         zoomButton.frame = zoomButtonFrame
     }
@@ -134,13 +147,13 @@ class MapViewController: UIViewController, GMSMapViewDelegate, OverlayDelegate, 
 
         adView = UIView()
 
-        updateAdFrame()
+        updateAdFrame(size: DeviceSize.bounds().size)
         adView.backgroundColor = UIColor.gray
         view.addSubview(adView)
     }
     
-    func updateAdFrame() {
-        adFrame = CGRect(x: 0, y: DeviceSize.screenHeight() - AdViewSize.height, width: DeviceSize.screenWidth(), height: AdViewSize.height)
+    func updateAdFrame(size: CGSize) {
+        adFrame = CGRect(x: 0, y: Int(size.height) - AdViewSize.height, width: Int(size.width), height: AdViewSize.height)
         adView.frame = adFrame
     }
     
