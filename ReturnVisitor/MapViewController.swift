@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import GoogleMaps
 
-class MapViewController: UIViewController, GMSMapViewDelegate {
+class MapViewController: UIViewController, GMSMapViewDelegate, OverlayDelegate, DrawerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,6 +20,7 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
         
         initLogoButton()
         initOverlay()
+        initDrawer()
         
         initAdView()
         
@@ -62,6 +63,10 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
         updateMapViewFrame()
         updateZoomButtonFrame()
         updateAdFrame()
+        
+        overlay.updateSize(size: CGSize(width: DeviceSize.screenWidth(), height: DeviceSize.screenHeight() - AdViewSize.height))
+        drawer.updateHeight(height: DeviceSize.screenHeight() - AdViewSize.height)
+        
     }
     
     func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
@@ -135,7 +140,7 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
     }
     
     func updateAdFrame() {
-        adFrame = CGRect(x: 0, y: DeviceSize.screenHeight() - 50, width: DeviceSize.screenWidth(), height: 50)
+        adFrame = CGRect(x: 0, y: DeviceSize.screenHeight() - AdViewSize.height, width: DeviceSize.screenWidth(), height: AdViewSize.height)
         adView.frame = adFrame
     }
     
@@ -152,15 +157,31 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
     func tapLogoButton(_ sender: UIButton) {
         print("Logo tapped!")
         overlay.fadeOverlay(fadeIn: true)
+        drawer.openDrawer()
     }
     
     var overlay: Overlay!
     func initOverlay() {
         overlay = Overlay(frame: CGRect(x: 0, y: 0, width: DeviceSize.screenWidth(), height: DeviceSize.screenHeight() - AdViewSize.height))
         self.view.addSubview(overlay)
+        overlay.delegate = self
 
     }
     
+    func onTapOverlay() {
+        drawer.closeDrawer()
+    }
+    
+    var drawer: Drawer!
+    func initDrawer() {
+        drawer = Drawer(frame: CGRect(x: 0, y: 0, width: DeviceSize.screenWidth(), height: DeviceSize.screenHeight() - AdViewSize.height))
+        drawer.delegate = self
+        self.view.addSubview(drawer)
+    }
+    
+    func onCloseDrawer() {
+        overlay.fadeOverlay(fadeIn: false)
+    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

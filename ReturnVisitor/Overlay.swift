@@ -10,10 +10,13 @@ import Foundation
 import UIKit
 class Overlay: UIView {
     
-//    var isShowing: Bool = false
     var showingWidth: CGFloat!
+    var delegate: OverlayDelegate?
+    var isShowing: Bool
     
     override init(frame: CGRect) {
+        
+        isShowing = false
         
         super.init(frame: frame)
         
@@ -28,23 +31,45 @@ class Overlay: UIView {
         
     }
     
-    required init (coder: NSCoder) {
-        super.init(coder: coder)!
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func updateSize(size: CGSize) {
+        
+        self.showingWidth = CGFloat(size.width)
+        self.frame.size.height = CGFloat(size.height)
+        
+        if (isShowing) {
+            self.frame.size.width = showingWidth
+        }
     }
     
     func fadeOverlay(fadeIn : Bool) {
-        if (fadeIn) {
+        
+        if fadeIn {
+            
+            if isShowing {
+                return
+            }
+            
             self.frame.size.width = showingWidth
             UIView.animate(withDuration: 0.5, delay: 0, options: .curveLinear, animations: {
                 self.alpha = 1
-            }, completion: nil)
+            }, completion: { (Bool) in
+                self.isShowing = true
+            })
             
             
         } else {
+            if !isShowing {
+                return
+            }
             UIView.animate(withDuration: 0.5, delay: 0, options: .curveLinear, animations: {
                 self.alpha = 0
             }, completion: { (Bool) in
                 self.frame.size.width = 0
+                self.isShowing = false
             })
         }
     }
@@ -52,6 +77,12 @@ class Overlay: UIView {
     func tapOverlay(_ sender : UITapGestureRecognizer) {
         print("Overlay tapped!")
         fadeOverlay(fadeIn: false)
+        self.delegate?.onTapOverlay()
     }
     
+}
+
+protocol OverlayDelegate {
+    
+    func onTapOverlay()
 }
