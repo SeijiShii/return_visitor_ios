@@ -66,8 +66,7 @@ class MapViewController: UIViewController, GMSMapViewDelegate, OverlayDelegate, 
         updateAdFrame(size: size)
         
         overlay.updateSize(size: size)
-        drawer.updateHeight(height: Int(size.height) - AdViewSize.height)
-        
+        drawer.updateHeight(height: Int(size.height) - AdViewSize.height)        
 
     }
         
