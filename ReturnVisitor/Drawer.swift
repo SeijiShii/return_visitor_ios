@@ -11,6 +11,8 @@ import UIKit
 
 class Drawer: UIView {
 
+    var delegate : DrawerDelegate?
+    
     let drawerWidth: Int = 300
     var overlay: UIView!
     var drawerView: UIView!
@@ -45,13 +47,28 @@ class Drawer: UIView {
         self.addSubview(drawerView)
     }
     
+    func openDrawer() {
+        
+    }
+    
     func openCloseDrawer()  {
         
+        var target: CGFloat
         
         if isDrawerOpen {
-            
+            target = -(CGFloat)(drawerWidth)
         } else {
-            
+            target = 0
         }
+        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: {
+            self.drawerView.frame.origin.x = target
+        }, completion: {(Bool) -> Void in
+            
+            self.isDrawerOpen = !self.isDrawerOpen})
     }
+    
+}
+
+protocol DrawerDelegate {
+    func postCloseDrawer()
 }

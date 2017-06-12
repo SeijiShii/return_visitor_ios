@@ -49,3 +49,7 @@ struct UserDefaultKeys {
         static let zoomLevel: String = "zoom_level"
     }
 }
+
+struct AdViewSize {
+    static let height: Int = 50
+}

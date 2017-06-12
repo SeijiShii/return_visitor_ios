@@ -19,6 +19,7 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
         initZoomButton()
         
         initLogoButton()
+        initOverlay()
         
         initAdView()
         
@@ -28,7 +29,7 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
     var mapFrame: CGRect!
     func initMapView() {
         // Create a GMSCameraPosition that tells the map to display the
-        mapFrame = CGRect(x: 0, y: 0, width: DeviceSize.screenWidth(), height: DeviceSize.screenHeight() - 50)
+        mapFrame = CGRect(x: 0, y: 0, width: DeviceSize.screenWidth(), height: DeviceSize.screenHeight() - AdViewSize.height)
         var cameraPosition = loadCameraPosition();
         if cameraPosition == nil {
             cameraPosition = GMSCameraPosition.camera(withLatitude: 0, longitude: 0, zoom: 1.0)
@@ -150,7 +151,16 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
     
     func tapLogoButton(_ sender: UIButton) {
         print("Logo tapped!")
+        overlay.fadeOverlay(fadeIn: true)
     }
+    
+    var overlay: Overlay!
+    func initOverlay() {
+        overlay = Overlay(frame: CGRect(x: 0, y: 0, width: DeviceSize.screenWidth(), height: DeviceSize.screenHeight() - AdViewSize.height))
+        self.view.addSubview(overlay)
+
+    }
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
