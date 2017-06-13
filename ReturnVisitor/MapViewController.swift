@@ -48,7 +48,9 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
         updateZoomButtonFrame()
         updateOverlaySize(screenSize : screenSize)
         updateLeftColumFrame(screenSize: screenSize)
-        updateLogoButton()
+        
+        refreshLogoButton()
+        refreshColumnLogoButton()
         
         updateAdFrame(screenSize : screenSize)
     }
@@ -64,6 +66,8 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
         
         updateLeftColumFrame(screenSize: DeviceSize.bounds().size)
         self.view.addSubview(leftColumn)
+        
+        initColumnLogoButton()
     }
     
     
@@ -217,14 +221,14 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
     var logoButton: UIButton!
     func initLogoButton() {
         logoButton = UIButton(frame: CGRect(x: 20, y: 30, width: 40, height: 40))
-        let logo = UIImage(named: "logo_40.png")
+        let logo = UIImage(named: "logo_80.png")
         logoButton.setImage(logo, for: .normal)
         self.view.addSubview(logoButton)
         
         logoButton.addTarget(self, action: #selector(tapLogoButton(_:)), for: .touchUpInside)
     }
     
-    func updateLogoButton() {
+    func refreshLogoButton() {
         if isHorizontalRegular! {
             logoButton.alpha = 0
         } else {
@@ -274,6 +278,31 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
     }
     
     func tapOverlay(_ sender: UITapGestureRecognizer) {
+        closeLeftColumn()
+    }
+    
+    var columnLogoButton: UIButton!
+    func initColumnLogoButton() {
+        columnLogoButton = UIButton()
+        columnLogoButton.setImage(UIImage(named: "logo_80.png"), for: .normal)
+        columnLogoButton.frame.size = CGSize(width: 40, height: 40)
+        columnLogoButton.frame.origin = CGPoint(x: leftColumn.frame.width / 2 - columnLogoButton.frame.width / 2, y: 30)
+        leftColumn.addSubview(columnLogoButton)
+        refreshColumnLogoButton()
+    
+    }
+    
+    func refreshColumnLogoButton() {
+        if isHorizontalRegular! {
+            columnLogoButton.isUserInteractionEnabled = false
+            columnLogoButton.removeTarget(self, action: #selector(tapColumnLogoButton(_:)), for: .touchUpInside)
+        } else {
+            columnLogoButton.isUserInteractionEnabled = true
+            columnLogoButton.addTarget(self, action: #selector(tapColumnLogoButton(_:)), for: .touchUpInside)
+        }
+    }
+    
+    func tapColumnLogoButton(_ sender: UIButton) {
         closeLeftColumn()
     }
     
