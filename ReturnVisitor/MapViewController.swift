@@ -46,6 +46,7 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
         updateMapBaseViewSize(screenSize: screenSize)
         updateMapViewFrame()
         updateZoomButtonFrame()
+        updateMapLabel()
         updateOverlaySize()
         updateLeftColumFrame(screenSize: screenSize)
         
@@ -143,12 +144,14 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
         
         mapView.settings.rotateGestures = true
         mapView.settings.zoomGestures = true
+        mapView.padding = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
         
         mapView.delegate = self
         
         self.mapBaseView.addSubview(mapView)
         
         initZoomButton()
+        initMapLabel()
         
     }
     
@@ -212,12 +215,30 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
     }
     
     func updateZoomButtonFrame() {
-        zoomButton.frame = CGRect(x: mapView.frame.width / 2 - zoomButton.frame.width / 2, y: mapView.frame.height - (zoomButton.frame.height + 10), width:
+        zoomButton.frame = CGRect(x: mapView.frame.width / 2 - zoomButton.frame.width / 2, y: mapView.frame.height - (zoomButton.frame.height + 25), width:
             zoomButton.frame.width, height: zoomButton.frame.height)
     }
     
     func zoomMap(sender: UIStepper) {
         mapView.animate(toZoom: Float(sender.value))
+    }
+    
+    var mapLabel: UILabel!
+    func initMapLabel() {
+        mapLabel = UILabel()
+        mapLabel.frame.size.height = 20
+        mapLabel.text = "Tap marker or Long tap on the map."
+        mapLabel.font = UIFont.systemFont(ofSize: 15)
+        mapLabel.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
+        mapLabel.textColor = UIColor.white
+        mapLabel.textAlignment = NSTextAlignment.center
+        updateMapLabel()
+        mapView.addSubview(mapLabel)
+    }
+    
+    func updateMapLabel() {
+        mapLabel.frame.size.width = mapView.frame.width
+        mapLabel.frame.origin = CGPoint(x: 0, y: mapView.frame.height - mapLabel.frame.height)
     }
     
     
