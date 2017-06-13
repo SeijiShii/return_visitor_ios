@@ -10,34 +10,106 @@ import Foundation
 import UIKit
 import GoogleMaps
 
-class MapViewController: UIViewController, GMSMapViewDelegate, OverlayDelegate, DrawerDelegate {
+class MapViewController: UIViewController, GMSMapViewDelegate {
     
+    var isHorizontalRegular: Bool! = false
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        initMapView()
-        initZoomButton()
+        setIsHorizontalRegular()
         
+        initMapView()
         initLogoButton()
         initOverlay()
-        initDrawer()
+        initLeftColumn()
         
         initAdView()
         
     }
+    
+    var leftColumnWidth : CGFloat! = 240
+    
+    override func viewWillTransition(to size: CGSize, with coordinator:UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        setIsHorizontalRegular()
+        updateViewSizes(screenSize: size)
+        
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        setIsHorizontalRegular()
+        updateViewSizes(screenSize: DeviceSize.bounds().size)
+    }
+  
+    func updateViewSizes(screenSize : CGSize) {
+        updateMapViewFrame(screenSize : screenSize)
+        updateZoomButtonFrame()
+        updateOverlaySize(screenSize : screenSize)
+        updateLeftColumFrame(screenSize: screenSize)
+        updateLogoButton()
+        
+        updateAdFrame(screenSize : screenSize)
+    }
+    
+    var leftColumn : UIView!
+    var leftSwipe: UISwipeGestureRecognizer!
+    func initLeftColumn() {
+        leftColumn = UIView()
+        leftColumn.backgroundColor = UIColor.white
+        
+        leftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(swipeLeftColumn(_:)))
+        leftSwipe.direction = .left
+        
+        updateLeftColumFrame(screenSize: DeviceSize.bounds().size)
+        self.view.addSubview(leftColumn)
+    }
+    
+    
+    func updateLeftColumFrame(screenSize: CGSize) {
+        
+        leftColumn.frame = CGRect(x: -leftColumnWidth, y: 0, width: leftColumnWidth, height: screenSize.height - AdViewSize.height)
+        
+        if isHorizontalRegular! {
+            leftColumn.removeGestureRecognizer(leftSwipe)
+            leftColumn.frame.origin.x = 0
+        } else {
+            leftColumn.addGestureRecognizer(leftSwipe)
+        }
+    }
+    
+    func swipeLeftColumn(_ sender : UISwipeGestureRecognizer) {
+        closeLeftColumn()
+    }
+    
+    func closeLeftColumn() {
+        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: {
+            self.leftColumn.frame.origin.x = -self.leftColumnWidth
+            self.overlay.alpha = 0
+            self.logoButton.alpha = 1
+        }, completion: nil)
+    }
+
+    func openLeftColumn() {
+        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: {
+            self.leftColumn.frame.origin.x = 0
+            self.overlay.alpha = 1
+            self.logoButton.alpha = 0
+        }, completion: nil)
+    }
+    
 
     var mapView: GMSMapView!
-    var mapFrame: CGRect!
     func initMapView() {
         // Create a GMSCameraPosition that tells the map to display the
-        mapFrame = CGRect(x: 0, y: 0, width: DeviceSize.screenWidth(), height: DeviceSize.screenHeight() - AdViewSize.height)
         var cameraPosition = loadCameraPosition();
         if cameraPosition == nil {
             cameraPosition = GMSCameraPosition.camera(withLatitude: 0, longitude: 0, zoom: 1.0)
         }
         mapView = GMSMapView()
         mapView.camera = cameraPosition!
-        updateMapViewFrame(size: DeviceSize.bounds().size)
+        updateMapViewFrame(screenSize: DeviceSize.bounds().size)
         mapView.isMyLocationEnabled = true
         
         mapView.mapType = GMSMapViewType.hybrid
@@ -49,24 +121,25 @@ class MapViewController: UIViewController, GMSMapViewDelegate, OverlayDelegate, 
         
         mapView.delegate = self
         
-        view.addSubview(mapView)
+        self.view.addSubview(mapView)
+        
+        initZoomButton()
         
     }
     
-    func updateMapViewFrame(size: CGSize) {
-        mapFrame = CGRect(x: 0, y: 0, width: Int(size.width), height: Int(size.height) - AdViewSize.height)
-        mapView.frame = mapFrame
+    func updateMapViewFrame(screenSize: CGSize) {
+        mapView.frame = CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height - AdViewSize.height)
+        if isHorizontalRegular! {
+            mapView.frame.origin.x = leftColumnWidth
+            mapView.frame.size.width = screenSize.width - leftColumnWidth
+        }
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-        
-        updateMapViewFrame(size: size)
-        updateZoomButtonFrame(mapViewSize: self.mapView.frame.size)
-        updateAdFrame(size: size)
-        
-        overlay.updateSize(size: size)
-        drawer.updateHeight(height: Int(size.height) - AdViewSize.height)        
+    func setIsHorizontalRegular() {
+        // .Regularか.Compactか
+        let collection = UITraitCollection(horizontalSizeClass: .regular)
+        // 含有しているか判定
+        isHorizontalRegular = traitCollection.containsTraits(in: collection)
 
     }
         
@@ -104,11 +177,10 @@ class MapViewController: UIViewController, GMSMapViewDelegate, OverlayDelegate, 
     }
     
     var zoomButton : UIStepper!
-    var zoomButtonFrame: CGRect!
     func initZoomButton() {
         zoomButton = UIStepper()
         
-        updateZoomButtonFrame(mapViewSize: mapView.frame.size)
+        updateZoomButtonFrame()
         
         mapView.addSubview(zoomButton)
         
@@ -118,10 +190,9 @@ class MapViewController: UIViewController, GMSMapViewDelegate, OverlayDelegate, 
         zoomButton.addTarget(self, action: #selector(MapViewController.zoomMap(sender:)), for: .touchUpInside)
     }
     
-    func updateZoomButtonFrame(mapViewSize size: CGSize) {
-        zoomButtonFrame = CGRect(x: size.width / 2 - zoomButton.frame.width / 2, y: size.height - (zoomButton.frame.height + 10), width:
+    func updateZoomButtonFrame() {
+        zoomButton.frame = CGRect(x: mapView.frame.width / 2 - zoomButton.frame.width / 2, y: mapView.frame.height - (zoomButton.frame.height + 10), width:
             zoomButton.frame.width, height: zoomButton.frame.height)
-        zoomButton.frame = zoomButtonFrame
     }
     
     func zoomMap(sender: UIStepper) {
@@ -130,59 +201,80 @@ class MapViewController: UIViewController, GMSMapViewDelegate, OverlayDelegate, 
     
     
     var adView : UIView!
-    var adFrame : CGRect!
-    
     func initAdView() {
 
         adView = UIView()
 
-        updateAdFrame(size: DeviceSize.bounds().size)
+        updateAdFrame(screenSize : DeviceSize.bounds().size)
         adView.backgroundColor = UIColor.gray
         view.addSubview(adView)
     }
     
-    func updateAdFrame(size: CGSize) {
-        adFrame = CGRect(x: 0, y: Int(size.height) - AdViewSize.height, width: Int(size.width), height: AdViewSize.height)
-        adView.frame = adFrame
+    func updateAdFrame(screenSize: CGSize) {
+        adView.frame = CGRect(x: 0, y: screenSize.height - AdViewSize.height, width: screenSize.width, height: AdViewSize.height)
     }
     
     var logoButton: UIButton!
     func initLogoButton() {
-        logoButton = UIButton(frame: CGRect(x: 10, y: 20, width: 40, height: 40))
+        logoButton = UIButton(frame: CGRect(x: 20, y: 30, width: 40, height: 40))
         let logo = UIImage(named: "logo_40.png")
         logoButton.setImage(logo, for: .normal)
-        mapView.addSubview(logoButton)
+        self.view.addSubview(logoButton)
         
         logoButton.addTarget(self, action: #selector(tapLogoButton(_:)), for: .touchUpInside)
     }
     
+    func updateLogoButton() {
+        if isHorizontalRegular! {
+            logoButton.alpha = 0
+        } else {
+            logoButton.alpha = 1
+        }
+    }
+    
     func tapLogoButton(_ sender: UIButton) {
         print("Logo tapped!")
-        overlay.fadeOverlay(fadeIn: true)
-        drawer.openDrawer()
+        openLeftColumn()
     }
     
-    var overlay: Overlay!
+    var overlay: UIView!
+    var tapOverlayGesture: UITapGestureRecognizer!
     func initOverlay() {
-        overlay = Overlay(frame: CGRect(x: 0, y: 0, width: DeviceSize.screenWidth(), height: DeviceSize.screenHeight() - AdViewSize.height))
+        overlay = UIView()
+        if #available(iOS 10.0, *) {
+            overlay.backgroundColor = UIColor(displayP3Red: 0, green: 0, blue: 0, alpha: 0.5)
+        } else {
+            // Fallback on earlier versions
+            overlay.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
+        }
+        overlay.alpha = 0
+        
+        tapOverlayGesture = UITapGestureRecognizer(target: self, action: #selector(tapOverlay(_:)))
+        updateOverlaySize(screenSize: DeviceSize.bounds().size)
         self.view.addSubview(overlay)
-        overlay.delegate = self
-
     }
     
-    func onTapOverlay() {
-        drawer.closeDrawer()
+    func updateOverlaySize(screenSize: CGSize) {
+        overlay.frame = CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height - AdViewSize.height)
+        
+        if isHorizontalRegular! {
+            overlay.removeGestureRecognizer(tapOverlayGesture)
+            overlay.frame.origin.x = leftColumnWidth
+            overlay.frame.size.width = screenSize.width - leftColumnWidth
+            
+            if overlay.alpha == 1.0 {
+                UIView.animate(withDuration: 0.5, animations: { 
+                    self.overlay.alpha = 0
+                })
+            }
+            
+        } else {
+            overlay.addGestureRecognizer(tapOverlayGesture)
+        }
     }
     
-    var drawer: Drawer!
-    func initDrawer() {
-        drawer = Drawer(frame: CGRect(x: 0, y: 0, width: DeviceSize.screenWidth(), height: DeviceSize.screenHeight() - AdViewSize.height))
-        drawer.delegate = self
-        self.view.addSubview(drawer)
-    }
-    
-    func onCloseDrawer() {
-        overlay.fadeOverlay(fadeIn: false)
+    func tapOverlay(_ sender: UITapGestureRecognizer) {
+        closeLeftColumn()
     }
     
     override func didReceiveMemoryWarning() {

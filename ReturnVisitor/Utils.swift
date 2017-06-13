@@ -51,5 +51,5 @@ struct UserDefaultKeys {
 }
 
 struct AdViewSize {
-    static let height: Int = 50
+    static let height: CGFloat = 50
 }
