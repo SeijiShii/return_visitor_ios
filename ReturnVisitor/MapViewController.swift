@@ -88,6 +88,7 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
         self.view.addSubview(leftColumn)
         
         initColumnLogoButton()
+        initAppTitle()
     }
     
     
@@ -318,6 +319,15 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
     
     func tapColumnLogoButton(_ sender: UIButton) {
         closeLeftColumn()
+    }
+    
+    func initAppTitle() {
+        let titleLabel = UILabel()
+        titleLabel.text = "Return Visitor"
+        titleLabel.font = UIFont.systemFont(ofSize: 20)
+        titleLabel.sizeToFit()
+        titleLabel.frame.origin = CGPoint(x: leftColumn.frame.width / 2 - titleLabel.frame.width / 2, y: 80)
+        leftColumn.addSubview(titleLabel)
     }
     
     override func didReceiveMemoryWarning() {
