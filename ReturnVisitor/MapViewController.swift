@@ -173,7 +173,8 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
     }
     
     func mapView(_ mapView: GMSMapView, didLongPressAt coordinate: CLLocationCoordinate2D) {
-        
+        mapView.animate(toLocation: coordinate)
+        showLongPressDialog(coordinate: coordinate)
     }
     
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
@@ -227,7 +228,7 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
     func initMapLabel() {
         mapLabel = UILabel()
         mapLabel.frame.size.height = 20
-        mapLabel.text = "Tap marker or Long tap on the map."
+        mapLabel.text = "Tap marker or Long press on the map."
         mapLabel.font = UIFont.systemFont(ofSize: 15)
         mapLabel.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
         mapLabel.textColor = UIColor.white
@@ -354,4 +355,29 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
+    
+    var longPressDialog : UIAlertController!
+    func showLongPressDialog(coordinate: CLLocationCoordinate2D) {
+        longPressDialog = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        longPressDialog.addAction(UIAlertAction(title: "Record Single House", style: .default, handler: { (UIAlertAction) in
+            print("Record Single House tapped!")
+            
+        }))
+        longPressDialog.addAction(UIAlertAction(title: "Record Housing Complex", style: .default, handler: { (UIAlertAction) in
+            
+        }))
+        longPressDialog.addAction(UIAlertAction(title: "Record as Not Home", style: .default, handler: { (UIAlertAction) in
+            
+        }))
+        longPressDialog.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: {(UIAlertAction) in
+            print("longPressDialog dismissed!")
+
+        }))
+        longPressDialog.popoverPresentationController?.sourceView = mapView
+        longPressDialog.popoverPresentationController?.sourceRect = CGRect(x: mapView.frame.width / 2, y: mapView.frame.height / 2, width: 0, height: 0)
+        
+        self.present(longPressDialog, animated: true, completion: nil)
+    }
+    
+    
 }
