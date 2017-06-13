@@ -19,9 +19,8 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
         
         setIsHorizontalRegular()
         
-        initMapView()
-        initLogoButton()
-        initOverlay()
+        initMapBaseView()
+        
         initLeftColumn()
         
         initAdView()
@@ -44,9 +43,10 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
     }
   
     func updateViewSizes(screenSize : CGSize) {
-        updateMapViewFrame(screenSize : screenSize)
+        updateMapBaseViewSize(screenSize: screenSize)
+        updateMapViewFrame()
         updateZoomButtonFrame()
-        updateOverlaySize(screenSize : screenSize)
+        updateOverlaySize()
         updateLeftColumFrame(screenSize: screenSize)
         
         refreshLogoButton()
@@ -54,6 +54,26 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
         
         updateAdFrame(screenSize : screenSize)
     }
+    
+    var mapBaseView: UIView!
+    func initMapBaseView() {
+        mapBaseView = UIView()
+        updateMapBaseViewSize(screenSize: DeviceSize.bounds().size)
+        self.view.addSubview(mapBaseView)
+        
+        initMapView()
+        initOverlay()
+        initLogoButton()
+    }
+    
+    func updateMapBaseViewSize(screenSize: CGSize) {
+        mapBaseView.frame = CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height - AdViewSize.height)
+        if isHorizontalRegular! {
+            mapBaseView.frame.origin.x = leftColumnWidth
+            mapBaseView.frame.size.width = screenSize.width - leftColumnWidth
+        }
+    }
+    
     
     var leftColumn : UIView!
     var leftSwipe: UISwipeGestureRecognizer!
@@ -113,7 +133,7 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
         }
         mapView = GMSMapView()
         mapView.camera = cameraPosition!
-        updateMapViewFrame(screenSize: DeviceSize.bounds().size)
+        updateMapViewFrame()
         mapView.isMyLocationEnabled = true
         
         mapView.mapType = GMSMapViewType.hybrid
@@ -125,18 +145,14 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
         
         mapView.delegate = self
         
-        self.view.addSubview(mapView)
+        self.mapBaseView.addSubview(mapView)
         
         initZoomButton()
         
     }
     
-    func updateMapViewFrame(screenSize: CGSize) {
-        mapView.frame = CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height - AdViewSize.height)
-        if isHorizontalRegular! {
-            mapView.frame.origin.x = leftColumnWidth
-            mapView.frame.size.width = screenSize.width - leftColumnWidth
-        }
+    func updateMapViewFrame() {
+        mapView.frame = CGRect(x: 0, y: 0, width: mapBaseView.frame.width, height: mapBaseView.frame.height)
     }
     
     func setIsHorizontalRegular() {
@@ -223,7 +239,7 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
         logoButton = UIButton(frame: CGRect(x: 20, y: 30, width: 40, height: 40))
         let logo = UIImage(named: "logo_80.png")
         logoButton.setImage(logo, for: .normal)
-        self.view.addSubview(logoButton)
+        self.mapBaseView.addSubview(logoButton)
         
         logoButton.addTarget(self, action: #selector(tapLogoButton(_:)), for: .touchUpInside)
     }
@@ -254,17 +270,15 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
         overlay.alpha = 0
         
         tapOverlayGesture = UITapGestureRecognizer(target: self, action: #selector(tapOverlay(_:)))
-        updateOverlaySize(screenSize: DeviceSize.bounds().size)
-        self.view.addSubview(overlay)
+        updateOverlaySize()
+        self.mapBaseView.addSubview(overlay)
     }
     
-    func updateOverlaySize(screenSize: CGSize) {
-        overlay.frame = CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height - AdViewSize.height)
+    func updateOverlaySize() {
+        overlay.frame = CGRect(x: 0, y: 0, width: mapBaseView.frame.width, height: mapBaseView.frame.height)
         
         if isHorizontalRegular! {
             overlay.removeGestureRecognizer(tapOverlayGesture)
-            overlay.frame.origin.x = leftColumnWidth
-            overlay.frame.size.width = screenSize.width - leftColumnWidth
             
             if overlay.alpha == 1.0 {
                 UIView.animate(withDuration: 0.5, animations: { 

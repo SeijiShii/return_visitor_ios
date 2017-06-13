@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ReturnVisitor/MapViewController.swift"
-            timestampString = "519048245.463919"
+            timestampString = "519049232.84566"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "146"
-            endingLineNumber = "146"
+            startingLineNumber = "166"
+            endingLineNumber = "166"
             landmarkName = "setIsHorizontalRegular()"
             landmarkType = "7">
          </BreakpointContent>
@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ReturnVisitor/MapViewController.swift"
-            timestampString = "519045213.056761"
+            timestampString = "519049232.84566"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "43"
-            endingLineNumber = "43"
+            startingLineNumber = "42"
+            endingLineNumber = "42"
             landmarkName = "traitCollectionDidChange(_:)"
             landmarkType = "7">
          </BreakpointContent>
