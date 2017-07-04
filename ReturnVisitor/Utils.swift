@@ -53,3 +53,12 @@ struct UserDefaultKeys {
 struct AdViewSize {
     static let height: CGFloat = 50
 }
+
+class DeviceHorizontalness {
+    static func isHorizontalRegular(viewController: UIViewController) -> Bool {
+        // .Regularか.Compactか
+        let collection = UITraitCollection(horizontalSizeClass: .regular)
+        // 含有しているか判定
+        return viewController.traitCollection.containsTraits(in: collection)
+    }
+}

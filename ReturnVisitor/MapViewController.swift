@@ -12,12 +12,10 @@ import GoogleMaps
 
 class MapViewController: UIViewController, GMSMapViewDelegate {
     
-    var isHorizontalRegular: Bool! = false
+//    var isHorizontalRegular: Bool! = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        setIsHorizontalRegular()
         
         initMapBaseView()
         
@@ -32,13 +30,11 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
     override func viewWillTransition(to size: CGSize, with coordinator:UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
-        setIsHorizontalRegular()
         updateViewSizes(screenSize: size)
         
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        setIsHorizontalRegular()
         updateViewSizes(screenSize: DeviceSize.bounds().size)
     }
   
@@ -69,7 +65,7 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
     
     func updateMapBaseViewSize(screenSize: CGSize) {
         mapBaseView.frame = CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height - AdViewSize.height)
-        if isHorizontalRegular! {
+        if DeviceHorizontalness.isHorizontalRegular(viewController: self) {
             mapBaseView.frame.origin.x = leftColumnWidth
             mapBaseView.frame.size.width = screenSize.width - leftColumnWidth
         }
@@ -97,7 +93,7 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
         
         leftColumn.frame = CGRect(x: -leftColumnWidth, y: 0, width: leftColumnWidth, height: screenSize.height - AdViewSize.height)
         
-        if isHorizontalRegular! {
+        if DeviceHorizontalness.isHorizontalRegular(viewController: self) {
             leftColumn.removeGestureRecognizer(leftSwipe)
             leftColumn.frame.origin.x = 0
         } else {
@@ -159,14 +155,14 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
         mapView.frame = CGRect(x: 0, y: 0, width: mapBaseView.frame.width, height: mapBaseView.frame.height)
     }
     
-    func setIsHorizontalRegular() {
-        // .Regularか.Compactか
-        let collection = UITraitCollection(horizontalSizeClass: .regular)
-        // 含有しているか判定
-        isHorizontalRegular = traitCollection.containsTraits(in: collection)
-
-    }
-        
+//    func setIsHorizontalRegular() {
+//        // .Regularか.Compactか
+//        let collection = UITraitCollection(horizontalSizeClass: .regular)
+//        // 含有しているか判定
+//        isHorizontalRegular = traitCollection.containsTraits(in: collection)
+//
+//    }
+    
     func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
         saveCameraPosition();
         zoomButton.value = Double(mapView.camera.zoom)
@@ -277,7 +273,7 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
     }
     
     func refreshLogoButton() {
-        if isHorizontalRegular! {
+        if DeviceHorizontalness.isHorizontalRegular(viewController: self) {
             logoButton.alpha = 0
         } else {
             logoButton.alpha = 1
@@ -309,7 +305,7 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
     func updateOverlaySize() {
         overlay.frame = CGRect(x: 0, y: 0, width: mapBaseView.frame.width, height: mapBaseView.frame.height)
         
-        if isHorizontalRegular! {
+        if DeviceHorizontalness.isHorizontalRegular(viewController: self) {
             overlay.removeGestureRecognizer(tapOverlayGesture)
             
             if overlay.alpha == 1.0 {
@@ -339,7 +335,7 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
     }
     
     func refreshColumnLogoButton() {
-        if isHorizontalRegular! {
+        if DeviceHorizontalness.isHorizontalRegular(viewController: self) {
             columnLogoButton.isUserInteractionEnabled = false
             columnLogoButton.removeTarget(self, action: #selector(tapColumnLogoButton(_:)), for: .touchUpInside)
         } else {
@@ -379,7 +375,12 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
             
         }))
         longPressDialog.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: {(UIAlertAction) in
+            
+            // 20170704 ipadでバックグラウンドタッチが拾われない
+            //  勘違いだったらしく解決
             print("longPressDialog dismissed!")
+            
+            // 仮マーカーの消去
             self.provisionalMarker!.map = nil
 
         }))

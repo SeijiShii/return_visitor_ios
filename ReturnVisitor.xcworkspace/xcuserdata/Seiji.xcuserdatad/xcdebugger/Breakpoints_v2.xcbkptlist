@@ -42,13 +42,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ReturnVisitor/MapViewController.swift"
-            timestampString = "519050852.692084"
+            timestampString = "520835492.979755"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "166"
-            endingLineNumber = "166"
-            landmarkName = "setIsHorizontalRegular()"
-            landmarkType = "7">
+            startingLineNumber = "162"
+            endingLineNumber = "162"
+            landmarkName = "MapViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ReturnVisitor/MapViewController.swift"
-            timestampString = "519049232.84566"
+            timestampString = "520835492.979755"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "42"
-            endingLineNumber = "42"
+            startingLineNumber = "38"
+            endingLineNumber = "38"
             landmarkName = "traitCollectionDidChange(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -90,11 +90,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ReturnVisitor/MapViewController.swift"
-            timestampString = "519045335.277724"
+            timestampString = "520835492.979755"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "47"
-            endingLineNumber = "47"
+            startingLineNumber = "43"
+            endingLineNumber = "43"
             landmarkName = "updateViewSizes(screenSize:)"
             landmarkType = "7">
          </BreakpointContent>
