@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import GoogleMaps
 
-class MapViewController: UIViewController, GMSMapViewDelegate {
+class MapViewController: UIViewController, GMSMapViewDelegate, UIViewControllerTransitioningDelegate {
     
 //    var isHorizontalRegular: Bool! = false
 
@@ -390,5 +390,11 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
         self.present(longPressDialog, animated: true, completion: nil)
     }
     
+    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+        return nil
+    }
     
+    func presentRecordVisitViewController(visit: ) {
+        
+    }
 }
