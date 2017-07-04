@@ -53,13 +53,13 @@ class VisitDetail: DataItem {
 
     }
     
-    func description(indent: Int, withTag : Bool) -> String {
+    func description(indent: Int, withTag : Bool) -> String? {
         var indentSpace = ""
         for _ in 0  ..< indent  {
             indentSpace = indentSpace + " "
         }
         
-        
+        return nil
     }
     
     

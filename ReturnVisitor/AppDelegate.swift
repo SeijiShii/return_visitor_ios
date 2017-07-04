@@ -19,8 +19,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         GMSServices.provideAPIKey("AIzaSyBD3ZjofyQ3J0ScGavlcRiMAVS6CDxn4sA")
         
+        let mapViewController = MapViewController()
+        let navigationController = UINavigationController(rootViewController: mapViewController)
+        navigationController.setNavigationBarHidden(true, animated: false)
+        
         self.window = UIWindow(frame: UIScreen.main.bounds)
-        self.window?.rootViewController = MapViewController()
+        self.window?.rootViewController = navigationController
         self.window?.makeKeyAndVisible()
         
         return true

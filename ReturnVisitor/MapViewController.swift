@@ -11,9 +11,7 @@ import UIKit
 import GoogleMaps
 
 class MapViewController: UIViewController, GMSMapViewDelegate, UIViewControllerTransitioningDelegate {
-    
-//    var isHorizontalRegular: Bool! = false
-
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -366,6 +364,8 @@ class MapViewController: UIViewController, GMSMapViewDelegate, UIViewControllerT
         longPressDialog = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         longPressDialog.addAction(UIAlertAction(title: "Record Single House", style: .default, handler: { (UIAlertAction) in
             print("Record Single House tapped!")
+            let place = Place(latLng: coordinate, category: .HOUSE)
+            self.presentRecordVisitViewController(visit: Visit(placeId: place.id))
             
         }))
         longPressDialog.addAction(UIAlertAction(title: "Record Housing Complex", style: .default, handler: { (UIAlertAction) in
@@ -394,7 +394,10 @@ class MapViewController: UIViewController, GMSMapViewDelegate, UIViewControllerT
         return nil
     }
     
-    func presentRecordVisitViewController(visit: ) {
+    func presentRecordVisitViewController(visit: Visit) {
+        
+        let recordVisitVC = RecordVisitViewController(visit: visit)
+        self.navigationController?.present(recordVisitVC, animated: true, completion: nil)
         
     }
 }
