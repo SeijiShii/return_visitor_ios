@@ -20,13 +20,7 @@ class DataItem {
         self.note = ""
         self.id = generateId(idHeader: idHeader)
     }
-    
-//    convenience init(idHeader: String) {
-//        
-//        self.init()
-//        self.id = generateId(idHeader: idHeader)
-//    }
-    
+        
     
     func generateId(idHeader: String) -> String {
         

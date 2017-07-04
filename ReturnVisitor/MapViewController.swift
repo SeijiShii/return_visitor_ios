@@ -172,10 +172,18 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
         zoomButton.value = Double(mapView.camera.zoom)
     }
     
+    var provisionalMarker: GMSMarker?
     func mapView(_ mapView: GMSMapView, didLongPressAt coordinate: CLLocationCoordinate2D) {
         mapView.animate(toLocation: coordinate)
         showLongPressDialog(coordinate: coordinate)
-        //
+        // 仮マーカーの表示
+        
+        let marker = GMSMarker()
+        marker.position = coordinate
+        marker.iconView = MarkerViews.PinMarkers.gray
+        marker.map = mapView
+        
+        provisionalMarker = marker
     }
     
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
@@ -372,6 +380,7 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
         }))
         longPressDialog.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: {(UIAlertAction) in
             print("longPressDialog dismissed!")
+            self.provisionalMarker!.map = nil
 
         }))
         longPressDialog.popoverPresentationController?.sourceView = mapView
