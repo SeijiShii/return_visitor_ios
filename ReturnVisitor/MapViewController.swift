@@ -175,6 +175,7 @@ class MapViewController: UIViewController, GMSMapViewDelegate {
     func mapView(_ mapView: GMSMapView, didLongPressAt coordinate: CLLocationCoordinate2D) {
         mapView.animate(toLocation: coordinate)
         showLongPressDialog(coordinate: coordinate)
+        //
     }
     
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
