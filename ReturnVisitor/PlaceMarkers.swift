@@ -17,16 +17,30 @@ import GoogleMaps
 
 class PlaceMarker {
     
+    var marker: GMSMarker
+    var placeId: String
+    
+    init(placeId: String, marker: GMSMarker) {
+        self.placeId = placeId
+        self.marker = marker
+    }
+    
 }
 
 class PlaceMarkers {
     
-    var marker: GMSMarker
-    var placeId: String
+    var markers: NSMutableArray
+    var mapView: GMSMapView
     
-    init(marker) {
-        <#statements#>
+    init(mapView: GMSMapView) {
+        
+        self.mapView = mapView
+        self.markers = NSMutableArray()
     }
     
+    private func addMarker(place: Place) {
+        
+    }
+
 }
 

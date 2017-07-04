@@ -32,10 +32,11 @@ class Place: DataItem {
         self.category = category
     }
     
-    override init() {
+    init() {
         self.latLng = CLLocationCoordinate2D(latitude: 0, longitude: 0)
         self.category = Category.UNDEFINED
         super.init(idHeader: Place.PLACE)
+        
     }
     
     func isAddressRequestNeeded() -> Bool {
