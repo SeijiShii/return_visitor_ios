@@ -13,19 +13,19 @@ class DataItem {
     var id: String
     var name: String
     var note: String
-    
-    init(idHeader: String) {
-        
-        initCommon()
-        self.id = generateId(idHeader: idHeader)
-    }
-    
-    func initCommon()  {
-        
+
+    init()  {
         self.id = ""
         self.name = ""
         self.note = ""
     }
+    
+    init(idHeader: String) {
+        
+        self.init()
+        self.id = generateId(idHeader: idHeader)
+    }
+    
     
     func generateId(idHeader: String) -> String {
         
