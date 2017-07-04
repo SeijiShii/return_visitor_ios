@@ -28,6 +28,9 @@ class VisitDetail: DataItem {
         
         self.priority = .NONE
         
+        self.placements = NSMutableArray()
+        self.tagIds = NSMutableArray()
+        
         super.init(idHeader: VisitDetail.VISIT_DETAIL)
     }
     
@@ -42,6 +45,9 @@ class VisitDetail: DataItem {
         self.isRv   = lastVisitDetail.isRv
         
         self.priority = lastVisitDetail.priority
+        
+        self.placements = NSMutableArray()
+        self.tagIds = NSMutableArray(array: lastVisitDetail.tagIds)
         
         super.init(idHeader: VisitDetail.VISIT_DETAIL)
 
